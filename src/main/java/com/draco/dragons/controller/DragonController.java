@@ -40,13 +40,21 @@ public class DragonController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Dragon> updateDragon(@PathVariable Long id, @RequestBody Dragon dragon) {
+    public ResponseEntity<Dragon> updateDragon(@PathVariable Long id, @RequestBody Dragon updatedDragon) {
         Dragon existingDragon = dragonRepository.findById(id).orElse(null);
         if (existingDragon != null) {
-            existingDragon.setName(dragon.getName());
-            existingDragon.setType(dragon.getType());
-            Dragon updatedDragon = dragonRepository.save(existingDragon);
-            return ResponseEntity.ok(updatedDragon);
+            // Update the name parameter if it's not null
+            if (updatedDragon.getName() != null) {
+                existingDragon.setName(updatedDragon.getName());
+            }
+
+            // Update the type parameter if it's not null
+            if (updatedDragon.getType() != null) {
+                existingDragon.setType(updatedDragon.getType());
+            }
+
+            Dragon savedDragon = dragonRepository.save(existingDragon);
+            return ResponseEntity.ok(savedDragon);
         } else {
             return ResponseEntity.notFound().build();
         }

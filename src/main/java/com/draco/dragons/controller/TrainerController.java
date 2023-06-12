@@ -40,13 +40,21 @@ public class TrainerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Trainer> updateTrainer(@PathVariable Long id, @RequestBody Trainer trainer) {
+    public ResponseEntity<Trainer> updateTrainer(@PathVariable Long id, @RequestBody Trainer updatedTrainer) {
         Trainer existingTrainer = trainerRepository.findById(id).orElse(null);
         if (existingTrainer != null) {
-            existingTrainer.setName(trainer.getName());
-            existingTrainer.setAge(trainer.getAge());
-            Trainer updatedTrainer = trainerRepository.save(existingTrainer);
-            return ResponseEntity.ok(updatedTrainer);
+            // Update the name parameter if it's not null
+            if (updatedTrainer.getName() != null) {
+               existingTrainer.setName(updatedTrainer.getName());
+            }
+
+            // Update the type parameter if it's not null
+            if (updatedTrainer.getAge() != null) {
+                existingTrainer.setAge(updatedTrainer.getAge());
+            }
+
+            Trainer savedTrainer = trainerRepository.save(existingTrainer);
+            return ResponseEntity.ok(savedTrainer);
         } else {
             return ResponseEntity.notFound().build();
         }

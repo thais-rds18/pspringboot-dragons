@@ -43,18 +43,31 @@ public class BattleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Battle> updateBattle(@PathVariable Long id, @RequestBody Battle battle) {
+    public ResponseEntity<Battle> updateBattle(@PathVariable Long id, @RequestBody Battle updatedBattle) {
         Battle existingBattle = battleRepository.findById(id).orElse(null);
         if (existingBattle != null) {
-            existingBattle.setDuration(battle.getDuration());
-            existingBattle.setDragon(battle.getDragon());
-            existingBattle.setTrainer(battle.getTrainer());
-            Battle updatedBattle = battleRepository.save(existingBattle);
-            return ResponseEntity.ok(updatedBattle);
+            // Update the duration parameter if it's not null
+            if (updatedBattle.getDuration() != null) {
+                existingBattle.setDuration(updatedBattle.getDuration());
+            }
+
+            // Update the dragon parameter if it's not null
+            if (updatedBattle.getDragon() != null) {
+                existingBattle.setDragon(updatedBattle.getDragon());
+            }
+
+            // Update the trainer parameter if it's not null
+            if (updatedBattle.getTrainer() != null) {
+                existingBattle.setTrainer(updatedBattle.getTrainer());
+            }
+
+            Battle savedBattle = battleRepository.save(existingBattle);
+            return ResponseEntity.ok(savedBattle);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBattle(@PathVariable Long id) {
